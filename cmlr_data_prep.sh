@@ -46,3 +46,5 @@ echo "cmlr10 m" >> $data/train/spk2gender
 
 utils/data/validate_data_dir.sh --no-feats $data/train || exit 1;
 
+echo "$0: CMLR data preparation succeeded"
+
