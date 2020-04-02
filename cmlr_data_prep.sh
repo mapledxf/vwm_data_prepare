@@ -1,12 +1,9 @@
 #!/bin/bash
 
-if [ $# != 2 ]; then
-  echo "Usage: $0 <corpus-path> <data-path>"
-  echo " $0 /export/a05/xna/data/data_aishell data/aishell"
-  exit 1;
-fi
+is_tts=false
 
 . ./path.sh || exit 1;
+. utils/parse_options.sh
 
 cmlr_dir=$1
 data=$2
@@ -34,8 +31,11 @@ while read line; do
 done < $train_dir/wav.flist > $train_dir/text.list
 
 paste -d' ' $train_dir/utt.list $train_dir/text.list > $train_dir/trans.txt
-local/clean_text_mandarin.py $train_dir/trans.txt phn | sort -u > $data/train/text
-
+if $is_tts; then
+	local/to_pinyin.py $train_dir/trans.txt phn | sort -u > $data/train/text
+else
+	python2 local/jieba_segment.py $train_dir/trans.txt > $data/train/text
+fi
 paste -d' ' $train_dir/utt.list $train_dir/wav.flist | sort > $data/train/wav.scp
 paste -d' ' $train_dir/utt.list $train_dir/spk.list | sort > $data/train/utt2spk
 utils/utt2spk_to_spk2utt.pl $data/train/utt2spk | sort > $data/train/spk2utt

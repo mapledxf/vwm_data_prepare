@@ -1,5 +1,7 @@
 #!/bin/bash
+is_tts=false
 . ./path.sh || exit 1;
+. utils/parse_options.sh
 
 src_dir=$1
 out_dir=$2
@@ -37,7 +39,11 @@ utils/filter_scp.pl -f 1 $train_dir/utt.list $train_dir/utt2spk_all | sort -k 1 
 #spk2utt
 utils/utt2spk_to_spk2utt.pl $train_dir/utt2spk | sort -k 1 | uniq > $train_dir/spk2utt
 #text
-python2 local/jieba_segment.py $train_dir/transcripts.txt > $train_dir/text
+if $is_tts; then
+        local/to_pinyin.py $train_dir/transcripts.txt phn > $train_dir/text
+else
+	python2 local/jieba_segment.py $train_dir/transcripts.txt > $train_dir/text
+fi
 #cat $vwm_text |\
 #  local/word_segment.py |\
 #  awk '{if (NF > 1) print $0;}' > $train_dir/text
