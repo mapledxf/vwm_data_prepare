@@ -50,7 +50,7 @@ if $is_tts; then
     echo "${id} ${id} ${start_sec} ${end_sec}" >> ${segments}
   done
 else
-  python local/rm_punctuation.py ${db}/ProsodyLabeling/000001-010000.txt | sed 's/#[0-9] */ /g' | awk '{print "csmsc"$0}'> ${text}
+  python local/rm_punctuation.py ${db}/ProsodyLabeling/000001-010000.txt | sed -n 'p;n' | sed 's/#[0-9] */ /g' | awk '{print "csmsc"$0}'> ${text}
 fi
 
 echo "Successfully finished making text, segments."
