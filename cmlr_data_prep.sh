@@ -32,9 +32,9 @@ done < $train_dir/wav.flist > $train_dir/text.list
 
 paste -d' ' $train_dir/utt.list $train_dir/text.list > $train_dir/trans.txt
 if $is_tts; then
-	local/to_pinyin.py $train_dir/trans.txt phn | sort -u > $data/train/text
+	$(dirname $(readlink -f "$0"))/local/to_pinyin.py $train_dir/trans.txt phn | sort -u > $data/train/text
 else
-	python2 local/jieba_segment.py $train_dir/trans.txt > $data/train/text
+	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/trans.txt > $data/train/text
 fi
 paste -d' ' $train_dir/utt.list $train_dir/wav.flist | sort > $data/train/wav.scp
 paste -d' ' $train_dir/utt.list $train_dir/spk.list | sort > $data/train/utt2spk

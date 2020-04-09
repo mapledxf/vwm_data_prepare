@@ -7,12 +7,6 @@ is_tts=false
 . ./path.sh || exit 1;
 . utils/parse_options.sh
 
-if [ $# != 2 ]; then
-  echo "Usage: $0 <corpus-path> <data-path>"
-  echo " $0 /export/a05/xna/data/data_aidatatang_200zh data/aidatatang"
-  exit 1;
-fi
-
 aidatatang_audio_dir=$1/corpus
 aidatatang_text=$1/transcript/aidatatang_200_zh_transcript.txt
 data=$2
@@ -22,6 +16,8 @@ dev_dir=$data/local/dev
 test_dir=$data/local/test
 tmp_dir=$data/local/tmp
 
+echo "dataset: $1"
+echo "output: $2"
 mkdir -p $train_dir
 mkdir -p $dev_dir
 mkdir -p $test_dir

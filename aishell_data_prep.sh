@@ -56,7 +56,7 @@ for dir in $train_dir $dev_dir $test_dir; do
   utils/filter_scp.pl -f 1 $dir/utt.list $dir/wav.scp_all | sort -u > $dir/wav.scp
 
   if $is_tts; then
-    local/to_pinyin.py $dir/transcripts.txt phn | sort -u > $dir/text
+    $(dirname $(readlink -f "$0"))/local/to_pinyin.py $dir/transcripts.txt phn | sort -u > $dir/text
   else
     sort -u $dir/transcripts.txt > $dir/text
   fi

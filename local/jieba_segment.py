@@ -6,13 +6,16 @@
 
 from __future__ import print_function
 import sys
+import os
 import jieba
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 trans_file=sys.argv[1]
 
-for word in open('local/jieba_words.txt'):
+path=os.path.split(os.path.realpath(__file__))[0]
+
+for word in open(os.path.join(path,'jieba_words.txt')):
     jieba.suggest_freq(word.strip("\n"), tune=True)
 
 for line in open(trans_file):

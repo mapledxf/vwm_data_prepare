@@ -40,13 +40,10 @@ utils/filter_scp.pl -f 1 $train_dir/utt.list $train_dir/utt2spk_all | sort -k 1 
 utils/utt2spk_to_spk2utt.pl $train_dir/utt2spk | sort -k 1 | uniq > $train_dir/spk2utt
 #text
 if $is_tts; then
-        local/to_pinyin.py $train_dir/transcripts.txt phn > $train_dir/text
+        $(dirname $(readlink -f "$0"))/local/to_pinyin.py $train_dir/transcripts.txt phn > $train_dir/text
 else
-	python2 local/jieba_segment.py $train_dir/transcripts.txt > $train_dir/text
+	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/transcripts.txt > $train_dir/text
 fi
-#cat $vwm_text |\
-#  local/word_segment.py |\
-#  awk '{if (NF > 1) print $0;}' > $train_dir/text
 
 for f in spk2utt utt2spk wav.scp text spk2gender; do
 	cp $train_dir/$f $out_dir/train/$f || exit 1;
