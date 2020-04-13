@@ -1,5 +1,7 @@
 #!/bin/bash
 is_tts=false
+fs=16000
+
 . ./path.sh || exit 1;
 . utils/parse_options.sh
 
@@ -11,7 +13,6 @@ script=$1/script/script.txt
 train_dir=$out_dir/local/train
 
 mkdir -p $train_dir
-mkdir -p $out_dir/train
 
 echo "**** Creating VWM data folder ****"
 #file list
@@ -45,11 +46,24 @@ else
 	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/transcripts.txt > $train_dir/text
 fi
 
-for f in spk2utt utt2spk wav.scp text spk2gender; do
-	cp $train_dir/$f $out_dir/train/$f || exit 1;
-done
+utils/data/resample_data_dir.sh ${fs} $train_dir
+utils/data/validate_data_dir.sh --no-feats $train_dir || exit 1;
 
-utils/data/validate_data_dir.sh --no-feats $out_dir/train || exit 1;
+train_set="train"
+dev_set="dev"
+n_spk=$(wc -l < $train_dir/spk2utt)
+n_total=$(wc -l < $train_dir/wav.scp)
+echo total set:$n_total
+n_dev=$(($n_total * 2 / 100 / $n_spk))
+n_train=$(($n_total - $n_dev))
+echo train set:$n_train, dev set:$n_dev
+# make a dev set
+utils/subset_data_dir.sh --per-spk $train_dir $n_dev $out_dir/${dev_set}
+utils/subset_data_dir.sh $train_dir $n_total $out_dir/${train_set}
 
+utils/data/validate_data_dir.sh --no-feats $out_dir/${dev_set} || exit 1;
+utils/data/validate_data_dir.sh --no-feats $out_dir/${train_set} || exit 1;
+
+touch $out_dir/.complete
 echo "$0: VWM $out_dir data preparation succeeded"
 exit 0;

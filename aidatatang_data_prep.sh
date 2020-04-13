@@ -4,6 +4,8 @@
 # Apache 2.0
 
 is_tts=false
+fs=16000
+
 . ./path.sh || exit 1;
 . utils/parse_options.sh
 
@@ -68,9 +70,14 @@ for f in spk2utt utt2spk wav.scp text; do
   cp $test_dir/$f $data/test/$f || exit 1;
 done
 
+utils/data/resample_data_dir.sh ${fs} $data/train
+utils/data/resample_data_dir.sh ${fs} $data/dev
+utils/data/resample_data_dir.sh ${fs} $data/test
+
 utils/data/validate_data_dir.sh --no-feats $data/train || exit 1;
 utils/data/validate_data_dir.sh --no-feats $data/dev || exit 1;
 utils/data/validate_data_dir.sh --no-feats $data/test || exit 1;
 
+touch $data/.complete
 echo "$0: aidatatang_200zh data preparation succeeded"
 exit 0;

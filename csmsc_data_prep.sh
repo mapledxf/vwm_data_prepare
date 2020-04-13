@@ -3,11 +3,13 @@
 # Copyright 2019 Nagoya University (Tomoki Hayashi)
 #  Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
 is_tts=false
+fs=16000
 . ./path.sh || exit 1;
 . utils/parse_options.sh
 
 db=$1
-data_dir=$2/train
+data=$2
+data_dir=$data/all
 
 # check directory existence
 [ ! -e ${data_dir} ] && mkdir -p ${data_dir}
@@ -54,5 +56,22 @@ else
 fi
 
 echo "Successfully finished making text, segments."
+utils/data/resample_data_dir.sh ${fs} $data_dir
 utils/data/validate_data_dir.sh --no-feats $data_dir || exit 1;
+
+train_set="train"
+dev_set="dev"
+n_total=$(wc -l < $data_dir/wav.scp)
+echo total set:$n_total
+n_dev=$(($n_total * 2 / 100))
+n_train=$(($n_total - $n_dev))
+echo train set:$n_train, dev set:$n_dev
+# make a dev set
+utils/subset_data_dir.sh --last $data_dir $n_dev $data/${dev_set}
+utils/subset_data_dir.sh --first $data_dir $n_train $data/${train_set}
+
+utils/data/validate_data_dir.sh --no-feats $data/${dev_set} || exit 1;
+utils/data/validate_data_dir.sh --no-feats $data/${train_set} || exit 1;
+
+touch $data/.complete
 echo "$0: CSMSC data preparation succeeded"
