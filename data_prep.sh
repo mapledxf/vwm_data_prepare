@@ -113,6 +113,7 @@ for corpus in "${ADDR[@]}"; do
 				;;
 		esac
 	fi
+	echo ""
 done
 
 echo "Combine train data"
@@ -121,3 +122,4 @@ utils/combine_data.sh $out_dir/combined_${fs}/train \
 echo "Combine dev data"
 utils/combine_data.sh $out_dir/combined_${fs}/dev \
        	$dev_set || exit 1;
+echo $'\nData prepare done'

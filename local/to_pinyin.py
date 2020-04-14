@@ -59,7 +59,7 @@ if __name__ == "__main__":
             segments = line.split(" ")
             lang_char = args.transcription_path.split('/')[-1][0]
             id = segments[0] # ex. TMF1_M10001
-            content = "".join(segments[1:]).replace("\n", "")
+            content = "".join(segments[1:]).replace("\r\n","\n").replace("\n", "")
 
             # Some special rules to match CSMSC pinyin
             text = pinyin(content, style=Style.TONE3)

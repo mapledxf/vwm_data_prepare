@@ -23,23 +23,32 @@ n=`cat $tmp_dir/wav.flist | wc -l`
 [ $n -ne 609552 ] && \
   echo Warning: expected 609552 data data files, found $n
 
+dir=$(dirname $(readlink -f "$0"))
+
 for x in train dev test; do
   grep -i "/$x/" $tmp_dir/wav.flist > $data/$x/wav.flist || exit 1;
   echo "Filtering data using found wav list and provided transcript for $x"
-  local/magicdata_data_filter.py $data/$x/wav.flist $corpus/$x/TRANS.txt $data/$x local/magicdata_badlist
+
+  $dir/local/magicdata_data_filter.py $data/$x/wav.flist $corpus/$x/TRANS.txt $data/$x $dir/local/magicdata_badlist
   cat $data/$x/transcripts.txt |\
     sed 's/！//g' | sed 's/？//g' |\
     sed 's/，//g' | sed 's/－//g' |\
     sed 's/：//g' | sed 's/；//g' |\
     sed 's/　//g' | sed 's/。//g' |\
     sed 's/\[//g' | sed 's/]//g' |\
-    sed 's/FIL//g' | sed 's/SPK//g' |\
-    local/word_segment.py |\
-    tr '[a-z]' '[A-Z]' |\
-    awk '{if (NF > 1) print $0;}' > $data/$x/text
+    sed 's/FIL//g' | sed 's/SPK//g' \
+    > $data/$x/trans_clean.txt
+
+  if $is_tts; then
+    $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data/$x/trans_clean.txt phn | sort -u > $data/$x/text
+  else
+    python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data/$x/trans_clean.txt > $data/$x/text
+  fi
+
   for file in wav.scp utt2spk text; do
     sort $data/$x/$file -o $data/$x/$file
   done
+
   utils/utt2spk_to_spk2utt.pl $data/$x/utt2spk > $data/$x/spk2utt
 done
 

@@ -16,7 +16,7 @@ data_dir=$out_dir/all
 
 echo "**** Creating primewords data folder ****"
 
-mkdir -p $data_dir
+mkdir -p $data_dir $data_local
 
 # find wav audio file for train
 
