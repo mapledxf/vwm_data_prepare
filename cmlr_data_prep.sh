@@ -36,7 +36,7 @@ mkdir -p $data/all
 if $is_tts; then
 	$(dirname $(readlink -f "$0"))/local/to_pinyin.py $train_dir/trans.txt phn | sort -u > $data/all/text
 else
-	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/trans.txt > $data/train/text
+	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/trans.txt > $data/all/text
 fi
 paste -d' ' $train_dir/utt.list $train_dir/wav.flist | sort > $data/all/wav.scp
 paste -d' ' $train_dir/utt.list $train_dir/spk.list | sort > $data/all/utt2spk
