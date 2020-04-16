@@ -36,16 +36,20 @@ mkdir -p $data/all
 if $is_tts; then
 	$(dirname $(readlink -f "$0"))/local/to_pinyin.py $train_dir/trans.txt phn | sort -u > $data/all/text
 else
-	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/trans.txt > $data/all/text
+	python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/trans.txt | sort -u > $data/all/text
 fi
 paste -d' ' $train_dir/utt.list $train_dir/wav.flist | sort > $data/all/wav.scp
 paste -d' ' $train_dir/utt.list $train_dir/spk.list | sort > $data/all/utt2spk
 utils/utt2spk_to_spk2utt.pl $data/all/utt2spk | sort > $data/all/spk2utt
 echo "cmlr01 m" > $data/all/spk2gender
+echo "cmlr02 m" >> $data/all/spk2gender
 echo "cmlr03 m" >> $data/all/spk2gender
 echo "cmlr04 f" >> $data/all/spk2gender
+echo "cmlr05 f" >> $data/all/spk2gender
 echo "cmlr06 f" >> $data/all/spk2gender
 echo "cmlr07 f" >> $data/all/spk2gender
+echo "cmlr08 f" >> $data/all/spk2gender
+echo "cmlr09 m" >> $data/all/spk2gender
 echo "cmlr10 m" >> $data/all/spk2gender
 echo "cmlr11 m" >> $data/all/spk2gender
 

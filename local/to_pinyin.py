@@ -20,31 +20,6 @@ class MyConverter(NeutralToneWith5Mixin, DefaultConverter):
 my_pinyin = Pinyin(MyConverter())
 pinyin = my_pinyin.pinyin
 
-try:
-    # For phoneme conversion, use https://github.com/Kyubyong/g2p.
-    from g2p_en import G2p
-    f_g2p = G2p()
-    f_g2p("")
-except ImportError:
-    raise ImportError("g2p_en is not installed. please run `. ./path.sh && pip install g2p_en`.")
-except LookupError:
-    # NOTE: we need to download dict in initial running
-    import ssl
-    try:
-        _create_unverified_https_context = ssl._create_unverified_context
-    except AttributeError:
-        pass
-    else:
-        ssl._create_default_https_context = _create_unverified_https_context
-    nltk.download("punkt")
-
-
-def g2p(text):
-    """Convert grapheme to phoneme."""
-    tokens = filter(lambda s: s != " ", f_g2p(text))
-    return ' '.join(tokens)
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('transcription_path', type=str, help='path for the transcription text file')
@@ -60,7 +35,6 @@ if __name__ == "__main__":
             lang_char = args.transcription_path.split('/')[-1][0]
             id = segments[0] # ex. TMF1_M10001
             content = "".join(segments[1:]).replace("\r\n","\n").replace("\n", "")
-
             # Some special rules to match CSMSC pinyin
             text = pinyin(content, style=Style.TONE3)
             text = [c[0] for c in text]

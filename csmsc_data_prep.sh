@@ -42,17 +42,12 @@ utils/utt2spk_to_spk2utt.pl ${utt2spk} > ${spk2utt}
 echo "Successfully finished making spk2utt."
 
 # make text and segments
+python $(dirname $(readlink -f "$0"))/local/rm_punctuation.py ${db}/ProsodyLabeling/000001-010000.txt | sed -n 'p;n' | sed 's/#[0-9] */ /g' | awk '{print "csmsc"$0}' | sed 's/\t/ /g'> ${data_dir}/trans.txt
+
 if $is_tts; then
-  find ${db}/PhoneLabeling -name "*.interval" -follow | sort | while read -r filename;do
-    id="csmsc$(basename ${filename} .interval)"
-    content=$(tail -n +13 ${filename} | grep "\"" | grep -v "sil" | sed -e "s/\"//g" | tr "\n" " " | sed -e "s/ $//g")
-    start_sec=$(tail -n +14 ${filename} | head -n 1)
-    end_sec=$(head -n -2 ${filename} | tail -n 1)
-    echo "${id} ${content}" >> ${text}
-    echo "${id} ${id} ${start_sec} ${end_sec}" >> ${segments}
-  done
+  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data_dir/trans.txt phn | sort -u > ${text}
 else
-  python $(dirname $(readlink -f "$0"))/local/rm_punctuation.py ${db}/ProsodyLabeling/000001-010000.txt | sed -n 'p;n' | sed 's/#[0-9] */ /g' | awk '{print "csmsc"$0}'> ${text}
+  sed 's/#[0-9] */ /g' ${data_dir}/trans.txt > ${text}
 fi
 
 echo "Successfully finished making text, segments."
