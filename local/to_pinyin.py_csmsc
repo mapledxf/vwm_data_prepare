@@ -23,10 +23,23 @@ class MyConverter(NeutralToneWith5Mixin, DefaultConverter):
 my_pinyin = Pinyin(MyConverter())
 pinyin = my_pinyin.pinyin
 
+def clean(content):
+    table = ''.maketrans("!.?,","！。？，")
+    content = content.translate(table)
+    replace=""
+    arr = array('u', ['…', '（', '）', '【', '】', '『', '』', '、', '；', '：', '‘', '’', '“', '”', '－', '　', '《', '》',"'", "(", ")", "{", "}", '"', 'π', '\\', '/'])
+    sub = "[" + "|".join(arr) + "]+"
+    return re.sub(sub, replace, content) \
+        .replace('[', replace) \
+        .replace(']', replace) \
+        .replace('FIL', replace) \
+        .replace('SPK', replace) \
+        .replace('  ', ' ')
 
 def get_pinyin(content):
     # Some special rules to match CSMSC pinyin
-    text = pinyin(content, style=Style.TONE3)
+    text = clean(content)
+    text = pinyin(text, style=Style.TONE3)
     text = [c[0] for c in text]
     clean_content = []
     for c in text:
@@ -63,17 +76,6 @@ def get_pinyin(content):
             else:
                 if re.match("un\d", c_final):
                     c_final = c_final.replace("un", "uen")
-        # for c in [c_init, c_final]:
-        #     if len(c) == 0:
-        #         continue
-        #     c = c.replace("ü", "v")
-        #     c = c.replace("ui", "uei")
-        #     c = c.replace("un", "uen")
-        #     c = c.replace("iu", "iou")
-        #
-        #     # Special rule: "e5n" -> "en5"
-        #     if "5" in c:
-        #         c = c.replace("5", "") + "5"
         if c_init:
             clean_content.append(c_init)
         clean_content.append(c_final)

@@ -19,6 +19,7 @@ if [ $# != 1 ]; then
     echo "    - magicdata"
     echo "    - primewords"
     echo "    - stcmds"
+    echo "    - ljspeech"
     exit 1;
 fi
 
@@ -38,7 +39,7 @@ openslr_thchs=/data/xfding/share/ASR/thchs30/data_thchs30
 openslr_celeb=/data/xfding/share/ASR/CN-Celeb
 vwm_noisy_48h_src=/data/xfding/share/ASR/noisy-48h
 vwm_quite_30h_src=/data/xfding/share/ASR/quite-30h
-
+openslr_ljspeech=/data/xfding/share/TTS/LJSpeech-1.1
 
 csmsc_data=/data/xfding/share/TTS/csmsc
 cmlr_data=/data/xfding/share/TTS/cmlr
@@ -96,6 +97,10 @@ for corpus in "${ADDR[@]}"; do
 				echo "Preparing primewords"
 				$(dirname $(readlink -f "$0"))/primewords_data_prep.sh --is_tts $is_tts --fs $fs $openslr_primewords $corpus_dir || exit 1;
 				;;
+			"ljspeech")
+				echo "Preparing ljspeech"
+				$(dirname $(readlink -f "$0"))/ljspeech_data_prep.sh --is_tts $is_tts --fs $fs $openslr_ljspeech $corpus_dir || exit 1;
+				;;
 			*) 
 				echo "Do not support: ${corpus}"
 			        echo "Available pretrained models:"
@@ -109,6 +114,7 @@ for corpus in "${ADDR[@]}"; do
 			        echo "    - magicdata"
 			        echo "    - primewords"
 			        echo "    - stcmds"
+                                echo "    - ljspeech"
 				exit 1 
 				;;
 		esac

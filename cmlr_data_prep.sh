@@ -13,7 +13,9 @@ mkdir -p $temp_dir
 
 echo "**** Creating cmlr data folder ****"
 # find wav audio file for train, dev and test resp.
-find $cmlr_dir -iname "*.wav" >$temp_dir/wav.flist
+#find $cmlr_dir -iname "*.wav" >$temp_dir/wav.flist
+find $cmlr_dir -iname "*.wav" | grep "s2" >$temp_dir/wav.flist
+
 n=$(cat $temp_dir/wav.flist | wc -l)
 echo Found $n data files
 echo Preparing $temp_dir transcriptions
@@ -59,6 +61,8 @@ echo "cmlr08 f" >>$data/all/spk2gender
 echo "cmlr09 m" >>$data/all/spk2gender
 echo "cmlr10 m" >>$data/all/spk2gender
 echo "cmlr11 m" >>$data/all/spk2gender
+
+echo "cmlr02 m" >$data/all/spk2gender
 
 utils/data/resample_data_dir.sh ${fs} $data/all
 utils/data/validate_data_dir.sh --no-feats $data/all || exit 1
