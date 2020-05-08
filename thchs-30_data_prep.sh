@@ -37,14 +37,10 @@ mkdir -p $data/{train,dev,test} $data/local/{train,dev,test}
     done
 
     if $is_tts; then
-      python $(dirname $(readlink -f "$0"))/local/clean_data.py $part/transcripts.txt \
-        >$part/transcripts_clean.txt
-      $(dirname $(readlink -f "$0"))/local/to_pinyin.py $part/transcripts_clean.txt | sort -u \
+      $(dirname $(readlink -f "$0"))/local/to_pinyin.py $part/transcripts.txt | sort -u \
         >$part/text
     else
-      python $(dirname $(readlink -f "$0"))/local/clean_data.py $part/transcripts.txt all \
-        >$part/transcripts_clean.txt
-      python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $part/transcripts_clean.txt | sort -u \
+      $(dirname $(readlink -f "$0"))/local/jieba_segment.py $part/transcripts.txt | sort -u \
         >$part/text
     fi
 

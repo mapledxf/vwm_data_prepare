@@ -41,14 +41,10 @@ utils/filter_scp.pl -f 1 $train_dir/utt.list $train_dir/utt2spk_all | sort -k 1 
 utils/utt2spk_to_spk2utt.pl $train_dir/utt2spk | sort -k 1 | uniq >$train_dir/spk2utt
 #text
 if $is_tts; then
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $train_dir/transcripts.txt \
-    >$train_dir/transcripts_clean.txt
-  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $train_dir/transcripts_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $train_dir/transcripts.txt | sort -u \
     >$train_dir/text
 else
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $train_dir/transcripts.txt all \
-    >$train_dir/transcripts_clean.txt
-  python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/transcripts_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/jieba_segment.py $train_dir/transcripts.txt | sort -u \
     >$train_dir/text
 fi
 

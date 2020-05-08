@@ -58,13 +58,9 @@ for dir in $train_dir $dev_dir $test_dir; do
   utils/filter_scp.pl -f 1 $dir/utt.list $dir/wav.scp_all | sort -u >$dir/wav.scp
 
   if $is_tts; then
-    python $(dirname $(readlink -f "$0"))/local/clean_data.py $dir/transcripts.txt \
-      >$dir/trans_clean.txt
-    $(dirname $(readlink -f "$0"))/local/to_pinyin.py $dir/trans_clean.txt | sort -u >$dir/text
+    $(dirname $(readlink -f "$0"))/local/to_pinyin.py $dir/transcripts.txt | sort -u >$dir/text
   else
-    python $(dirname $(readlink -f "$0"))/local/clean_data.py $dir/transcripts.txt all \
-      >$dir/trans_clean.txt
-    sort -u $dir/trans_clean.txt >$dir/text
+    $(dirname $(readlink -f "$0"))/local/text_format.py -f $data_dir/transcripts.txt | sort -u >$dir/text
   fi
 
   utils/utt2spk_to_spk2utt.pl $dir/utt2spk >$dir/spk2utt

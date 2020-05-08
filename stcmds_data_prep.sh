@@ -41,14 +41,10 @@ paste -d' ' $data/local/utt.list $data/local/text.list >$data/local/transcripts.
 #  awk '{if (NF > 1) print $0;}' > $data/local/transcripts.txt
 
 if $is_tts; then
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $data/local/transcripts.txt \
-    >$data/local/transcripts_clean.txt
-  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data/local/transcripts_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data/local/transcripts.txt | sort -u \
     >$data_dir/text
 else
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $data/local/transcripts.txt all \
-    >$data/local/transcripts_clean.txt
-  python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data/local/transcripts_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data/local/transcripts.txt | sort -u \
     >$data_dir/text
 fi
 

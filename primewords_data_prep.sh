@@ -29,14 +29,10 @@ echo "Filtering data using found wav list and provided transcript"
 $(dirname $(readlink -f "$0"))/local/primewords_parse_transcript.py $data_local/wav.flist $corpus/set1_transcript.json $data_local
 
 if $is_tts; then
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $data_local/transcripts.txt \
-    >$data_local/trans_clean.txt
-  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data_local/trans_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data_local/transcripts.txt | sort -u \
     >$data_local/text
 else
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $data_local/transcripts.txt all \
-    >$data_local/trans_clean.txt
-  python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data_local/trans_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data_local/transcripts.txt | sort -u \
     >$data_local/text
 fi
 

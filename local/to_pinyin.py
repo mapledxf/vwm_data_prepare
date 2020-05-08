@@ -8,38 +8,50 @@ import codecs
 import nltk
 import os
 import re
-from array import array
+import nltk
+from text_format import spacing_text
+
+from tacotron_cleaner.cleaners import custom_english_cleaners
 from pypinyin import pinyin, Style
 from pypinyin.style._utils import get_initials, get_finals
 from pypinyin.contrib.neutral_tone import NeutralToneWith5Mixin
 from pypinyin.converter import DefaultConverter
 from pypinyin.core import Pinyin
 
+try:
+    # For phoneme conversion, use https://github.com/Kyubyong/g2p.
+    from g2p_en import G2p
+
+    f_g2p = G2p()
+    f_g2p("")
+except ImportError:
+    raise ImportError(
+        "g2p_en is not installed. please run `. ./path.sh && pip install g2p_en`."
+    )
+except LookupError:
+    # NOTE: we need to download dict in initial running
+    nltk.download("punkt")
+
+def g2p(text):
+    """Convert grapheme to phoneme."""
+    tokens = filter(lambda s: s != " ", f_g2p(text))
+    return " ".join(tokens)
 
 class MyConverter(NeutralToneWith5Mixin, DefaultConverter):
     pass
 
-
 my_pinyin = Pinyin(MyConverter())
 pinyin = my_pinyin.pinyin
 
-def clean(content):
-    table = ''.maketrans("！。？，", "!.?,")
-    content = content.translate(table)
-    replace=""
-    arr = array('u', ['…', '（', '）', '【', '】', '『', '』', '、', '；', '：', '‘', '’', '“', '”', '－', '　', '《', '》',"'", "(", ")", "{", "}", '"', 'π', '\\', '/'])
-    sub = "[" + "|".join(arr) + "]+"
-    return re.sub(sub, replace, content) \
-        .replace('[', replace) \
-        .replace(']', replace) \
-        .replace('FIL', replace) \
-        .replace('SPK', replace) \
-        .replace('  ', ' ')
+def get_g2p(content):
+    clean_content = custom_english_cleaners(content.rstrip())
+    text = clean_content.lower()
+    clean_content = g2p(text)
+    return clean_content
 
 def get_pinyin(content):
     # Some special rules to match CSMSC pinyin
-    text = clean(content)
-    text = pinyin(text, style=Style.TONE3)
+    text = pinyin(content, style=Style.TONE3)
     text = [c[0] for c in text]
     clean_content = []
     for c in text:
@@ -81,6 +93,19 @@ def get_pinyin(content):
         clean_content.append(c_final)
     return ' '.join(clean_content)
 
+def is_chinese(strs):
+    strs.decode('utf-8')
+    return u'\u4e00' <= strs[0] <= u'\u9fff'
+
+def get_phn(content):
+    text = spacing_text(content, True).strip().split(' ')
+    clean_content = []
+    for word in text:
+        if ord(word[0]) <= 255:
+            clean_content.append(get_g2p(word))
+        else:
+            clean_content.append(get_pinyin(word))
+    return ' '.join(clean_content)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -91,13 +116,12 @@ if __name__ == "__main__":
         with codecs.open(args.transcription_path, 'r', 'utf-8') as fid:
             for line in fid.readlines():
                 segments = re.split('[\t ]', line)
-                lang_char = args.transcription_path.split('/')[-1][0]
                 id = segments[0]  # ex. TMF1_M10001
-                content = "".join(segments[1:]).replace("\r\n", "\n").replace("\n", "")
+                content = " ".join(segments[1:]).replace("\r\n", "\n").replace("\n", "")
 
-                clean_content = get_pinyin(content)
-                print("%s %s" % (id, clean_content))
+                clean_content = get_phn(content)
+                print("%s\t%s" % (id, clean_content))
     else:
         text = args.transcription_path
-        clean_content = get_pinyin(text.replace(" ", ""))
+        clean_content = get_phn(text)
         print(clean_content)

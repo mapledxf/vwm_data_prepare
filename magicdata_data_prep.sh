@@ -31,13 +31,9 @@ for x in train dev test; do
 
   $dir/local/magicdata_data_filter.py $data/$x/wav.flist $corpus/$x/TRANS.txt $data/$x $dir/local/magicdata_badlist
   if $is_tts; then
-    python $(dirname $(readlink -f "$0"))/local/clean_data.py $data/$x/transcripts.txt \
-      >$data/$x/trans_clean.txt
-    $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data/$x/trans_clean.txt | sort -u >$data/$x/text
+    $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data/$x/transcripts.txt | sort -u >$data/$x/text
   else
-    python $(dirname $(readlink -f "$0"))/local/clean_data.py $data/$x/transcripts.txt all \
-      >$data/$x/trans_clean.txt
-    python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data/$x/trans_clean.txt | sort -u >$data/$x/text
+    $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data/$x/transcripts.txt | sort -u >$data/$x/text
   fi
 
   for file in wav.scp utt2spk text; do

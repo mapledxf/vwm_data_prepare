@@ -49,15 +49,11 @@ cat ${db}/ProsodyLabeling/000001-010000.txt |
     >${data_dir}/trans.txt
 
 if $is_tts; then
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $data_dir/trans.txt \
-    >$data_dir/trans_clean.txt
-  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data_dir/trans_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $data_dir/trans.txt | sort -u \
     >${text}
 else
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $data_dir/trans.txt all \
-    >$data_dir/trans_clean.txt
-  python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data_dir/trans_clean.txt | sort -u \
-    >${text}
+#  $(dirname $(readlink -f "$0"))/local/jieba_segment.py $data_dir/trans.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/text_format.py -f $data_dir/trans.txt | sort -u >${text}
 fi
 
 find ${db}/PhoneLabeling -name "*.interval" -follow | sort | while read -r filename;do

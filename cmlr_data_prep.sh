@@ -37,14 +37,10 @@ paste -d' ' $temp_dir/utt.list $temp_dir/text.list >$temp_dir/trans.txt
 mkdir -p $data/all
 
 if $is_tts; then
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $temp_dir/trans.txt \
-    >$temp_dir/trans_clean.txt
-  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $temp_dir/trans_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/to_pinyin.py $temp_dir/trans.txt | sort -u \
     >$data/all/text
 else
-  python $(dirname $(readlink -f "$0"))/local/clean_data.py $temp_dir/trans.txt all \
-    >$temp_dir/trans_clean.txt
-  python2 $(dirname $(readlink -f "$0"))/local/jieba_segment.py $temp_dir/trans_clean.txt | sort -u \
+  $(dirname $(readlink -f "$0"))/local/jieba_segment.py $temp_dir/trans.txt | sort -u \
     >$data/all/text
 fi
 paste -d' ' $temp_dir/utt.list $temp_dir/wav.flist | sort >$data/all/wav.scp
