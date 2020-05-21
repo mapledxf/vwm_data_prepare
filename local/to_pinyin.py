@@ -101,6 +101,8 @@ def get_phn(content):
     text = spacing_text(content, True).strip().split(' ')
     clean_content = []
     for word in text:
+        if not word.strip():
+            continue
         if ord(word[0]) <= 255:
             clean_content.append(get_g2p(word))
         else:
