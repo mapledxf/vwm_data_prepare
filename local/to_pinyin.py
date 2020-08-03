@@ -11,7 +11,7 @@ import re
 import nltk
 from text_format import spacing_text
 
-from tacotron_cleaner.cleaners import custom_english_cleaners
+from english_cleaner import custom_english_cleaners
 from pypinyin import pinyin, Style
 from pypinyin.style._utils import get_initials, get_finals
 from pypinyin.contrib.neutral_tone import NeutralToneWith5Mixin
