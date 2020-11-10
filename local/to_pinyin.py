@@ -74,7 +74,7 @@ def get_pinyin(content):
         if re.match("ui\d", c_final):
             c_final = c_final.replace("ui", "uei")
         if re.match("ue\d", c_final):
-            c_final = c_final.replace("ui", "ve")
+            c_final = c_final.replace("ue", "ve")
 
         if re.match("i\d", c_final):
             if c_init in ['z', 'c', 's']:
