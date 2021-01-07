@@ -29,7 +29,7 @@ echo "**** Creating CSMSC data folder ****"
 [ -e ${segments} ] && rm ${segments}
 
 # make scp, utt2spk, and spk2utt
-find ${db} -name "*.wav" -follow | sort | while read -r filename; do
+find ${db}/Wave -name "*.wav" -follow | sort | while read -r filename; do
   id="csmsc$(basename ${filename} .wav)"
   echo "${id} ${filename}" >>${scp}
   echo "${id} csmsc" >>${utt2spk}
@@ -71,7 +71,7 @@ train_set="train"
 dev_set="dev"
 n_total=$(wc -l <$data_dir/wav.scp)
 echo total set:$n_total
-n_dev=$(($n_total * 2 / 100))
+n_dev=$(($n_total * 10 / 100))
 n_train=$(($n_total - $n_dev))
 echo train set:$n_train, dev set:$n_dev
 # make a dev set

@@ -46,15 +46,26 @@ utils/data/validate_data_dir.sh --no-feats $data_dir || exit 1
 
 train_set="train"
 dev_set="dev"
-n_spk=$(wc -l <$data_dir/spk2utt)
 n_total=$(wc -l <$data_dir/wav.scp)
 echo total set:$n_total
-n_dev=$(($n_total * 2 / 100 / $n_spk))
+n_dev=$(($n_total * 10 / 100))
 n_train=$(($n_total - $n_dev))
 echo train set:$n_train, dev set:$n_dev
 # make a dev set
-utils/subset_data_dir.sh --per-spk $data_dir $n_dev $out_dir/${dev_set}
-utils/subset_data_dir.sh $data_dir $n_total $out_dir/${train_set}
+utils/subset_data_dir.sh --last $data_dir $n_dev $out_dir/${dev_set}
+utils/subset_data_dir.sh --first $data_dir $n_train $out_dir/${train_set}
+
+#train_set="train"
+#dev_set="dev"
+#n_spk=$(wc -l <$data_dir/spk2utt)
+#n_total=$(wc -l <$data_dir/wav.scp)
+#echo total set:$n_total
+#n_dev=$(($n_total * 2 / 100 / $n_spk))
+#n_train=$(($n_total - $n_dev))
+#echo train set:$n_train, dev set:$n_dev
+## make a dev set
+#utils/subset_data_dir.sh --per-spk $data_dir $n_dev $out_dir/${dev_set}
+#utils/subset_data_dir.sh $data_dir $n_total $out_dir/${train_set}
 
 utils/data/validate_data_dir.sh --no-feats $out_dir/${dev_set} || exit 1
 utils/data/validate_data_dir.sh --no-feats $out_dir/${train_set} || exit 1

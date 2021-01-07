@@ -37,8 +37,8 @@ openslr_primewords=/data/xfding/share/ASR/primewords_md_2018_set1
 openslr_stcmds=/data/xfding/share/ASR/ST-CMDS-20170001_1-OS
 openslr_thchs=/data/xfding/share/ASR/thchs30/data_thchs30
 openslr_celeb=/data/xfding/share/ASR/CN-Celeb
-vwm_noisy_48h_src=/data/xfding/share/ASR/noisy-48h
-vwm_quite_30h_src=/data/xfding/share/ASR/quite-30h
+vwm_noisy_48h_src=/data/xfding/share/ASR/vwm/noisy-48h
+vwm_quite_30h_src=/data/xfding/share/ASR/vwm/quite-30h
 openslr_ljspeech=/data/xfding/share/TTS/LJSpeech-1.1
 
 csmsc_data=/data/xfding/share/TTS/csmsc

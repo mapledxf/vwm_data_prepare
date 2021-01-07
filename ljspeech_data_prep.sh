@@ -47,7 +47,7 @@ train_set="train"
 dev_set="dev"
 n_total=$(wc -l <$data_dir/wav.scp)
 echo total set:$n_total
-n_dev=$(($n_total * 2 / 100))
+n_dev=$(($n_total * 10 / 100))
 n_train=$(($n_total - $n_dev))
 echo train set:$n_train, dev set:$n_dev
 # make a dev set

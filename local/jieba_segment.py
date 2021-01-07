@@ -27,5 +27,5 @@ with codecs.open(trans_file, 'r', 'utf-8') as fid:
         content = " ".join(segments[1:]).replace("\r\n", "\n").replace("\n", "")
         content = spacing_text(content, False).strip()
         words = jieba.cut(content, HMM=False)
-        new_line = id + '\t' + " ".join(" ".join(words).split())
+        new_line = id + '\t' + " ".join(" ".join(words).split()).upper()
         print(new_line)

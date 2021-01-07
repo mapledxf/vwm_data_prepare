@@ -51,8 +51,6 @@ fi
 utils/data/resample_data_dir.sh ${fs} $train_dir
 utils/data/validate_data_dir.sh --no-feats $train_dir || exit 1
 
-
-
 train_set="train"
 dev_set="dev"
 n_total=$(wc -l <$train_dir/wav.scp)
@@ -72,6 +70,7 @@ utils/subset_data_dir.sh --first $train_dir $n_train $out_dir/${train_set}
 #n_dev=$(($n_total * 2 / 100 / $n_spk))
 #n_train=$(($n_total - $n_dev))
 #echo train set:$n_train, dev set:$n_dev
+## make a dev set
 #utils/subset_data_dir.sh --per-spk $train_dir $n_dev $out_dir/${dev_set}
 #utils/subset_data_dir.sh $train_dir $n_total $out_dir/${train_set}
 

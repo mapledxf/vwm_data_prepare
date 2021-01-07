@@ -60,7 +60,7 @@ for dir in $train_dir $dev_dir $test_dir; do
   if $is_tts; then
     $(dirname $(readlink -f "$0"))/local/to_pinyin.py $dir/transcripts.txt | sort -u >$dir/text
   else
-    $(dirname $(readlink -f "$0"))/local/text_format.py -f $data_dir/transcripts.txt | sort -u >$dir/text
+    $(dirname $(readlink -f "$0"))/local/text_format.py -f $dir/transcripts.txt | sort -u >$dir/text
   fi
 
   utils/utt2spk_to_spk2utt.pl $dir/utt2spk >$dir/spk2utt

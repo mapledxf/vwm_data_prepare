@@ -96,7 +96,7 @@ def spacing_text(text, tts=False):
     """
     Perform paranoid text spacing on text. An alias of `spacing()`.
     """
-    text = clean(text,tts)
+    text = clean(text.upper(),tts)
     return spacing(text)
 
 
