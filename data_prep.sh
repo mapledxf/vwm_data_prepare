@@ -15,11 +15,13 @@ if [ $# != 1 ]; then
     echo "    - csmsc"
     echo "    - vwm_noisy_48h"
     echo "    - vwm_quite-30h"
+    echo "    - vwm_asr"
     echo "    - thchs"
     echo "    - magicdata"
     echo "    - primewords"
     echo "    - stcmds"
     echo "    - ljspeech"
+    echo "    - libri"
     exit 1;
 fi
 
@@ -39,8 +41,9 @@ openslr_thchs=/data/xfding/share/ASR/thchs30/data_thchs30
 openslr_celeb=/data/xfding/share/ASR/CN-Celeb
 vwm_noisy_48h_src=/data/xfding/share/ASR/vwm/noisy-48h
 vwm_quite_30h_src=/data/xfding/share/ASR/vwm/quite-30h
+vwm_asr=/data/xfding/share/ASR/供应商交付原始高保真数据
 openslr_ljspeech=/data/xfding/share/TTS/LJSpeech-1.1
-
+openslr_libri=/data/xfding/share/ASR/LibriSpeech
 csmsc_data=/data/xfding/share/TTS/csmsc
 cmlr_data=/data/xfding/share/TTS/cmlr
 
@@ -81,6 +84,10 @@ for corpus in "${ADDR[@]}"; do
 				echo "Preparing vwm_quite_30h"
 				$(dirname $(readlink -f "$0"))/vwm_data_prep.sh --is_tts $is_tts --fs $fs $vwm_quite_30h_src $corpus_dir || exit 1;
 				;;
+                        "vwm_asr")
+                                echo "Preparing vwm_asr"
+                                $(dirname $(readlink -f "$0"))/vwm_asr_prep.sh --is_tts $is_tts --fs $fs $vwm_asr $corpus_dir || exit 1;
+                                ;;
 			"stcmds")
 				echo "Preparing stcmds"
 				$(dirname $(readlink -f "$0"))/stcmds_data_prep.sh --is_tts $is_tts --fs $fs $openslr_stcmds $corpus_dir || exit 1;
@@ -96,6 +103,10 @@ for corpus in "${ADDR[@]}"; do
 			"primewords")
 				echo "Preparing primewords"
 				$(dirname $(readlink -f "$0"))/primewords_data_prep.sh --is_tts $is_tts --fs $fs $openslr_primewords $corpus_dir || exit 1;
+				;;
+			"libri")
+				echo "Preparing librispeech"
+				$(dirname $(readlink -f "$0"))/libri_data_prep.sh --is_tts $is_tts --fs $fs $openslr_libri $corpus_dir || exit 1;
 				;;
 			"ljspeech")
 				echo "Preparing ljspeech"
@@ -115,6 +126,7 @@ for corpus in "${ADDR[@]}"; do
 			        echo "    - primewords"
 			        echo "    - stcmds"
                                 echo "    - ljspeech"
+				echo "    - libri"
 				exit 1 
 				;;
 		esac
